@@ -24,13 +24,8 @@
  */
 package com.github.caciocavallosilano.cacio.ctc;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
+import java.awt.*;
+import java.awt.event.WindowEvent;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -56,6 +51,7 @@ public class CTCScreen implements PlatformScreen {
     }
 
     private CTCScreen() {
+        applyWindowEvent();
         Dimension d = FullScreenWindowFactory.getScreenDimension();
         screenBuffer = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_ARGB);
     }
@@ -130,6 +126,17 @@ public class CTCScreen implements PlatformScreen {
 	    return dataBufAux;
         }
     }
+
+    public static void applyWindowEvent() {
+        Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
+            System.out.println("EVENT CALLED");
+            if(e.getID() != WindowEvent.WINDOW_OPENED) return;
+            onWindowAppeared();
+
+        }, WindowEvent.WINDOW_EVENT_MASK);
+    }
+
+    private static native void onWindowAppeared();
 
     static {
         // Load it to get JavaVM instance
